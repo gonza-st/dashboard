@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공자 스터디 발표 일정</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .fc-event-title {
+            font-weight: bold;
+        }
+        .fc-event-time {
+            display: none;
+        }
+        .github-link {
+            color: #0366d6;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .github-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>조직 발표 일정 캘린더</h1>
+<div id="calendar"></div>
+
+<script>
+  // 멤버 리스트
+  const members = ['currenjin', 'heonbyeong', 'leeMK09', 'taiyoung12', 'hongxeob'];
+
+  // 시작 날짜 설정 (예: 2023년 9월 25일)
+  const startDate = new Date('2024-09-24');
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      initialDate: startDate,
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek'
+      },
+      events: generateEvents(),
+      eventContent: function(arg) {
+        return {
+          html: '<div class="fc-event-title">발표자</div>' +
+            '<div class="fc-event-desc">' +
+            '<a href="https://github.com/' + arg.event.extendedProps.githubId + '" ' +
+            'class="github-link" target="_blank">' + arg.event.extendedProps.githubId + '</a>' +
+            '</div>'
+        };
+      }
+    });
+    calendar.render();
+  });
+
+  function generateEvents() {
+    let events = [];
+    let currentDate = new Date(startDate);
+    let endDate = new Date(currentDate);
+    endDate.setMonth(endDate.getMonth() + 1);
+
+    let memberIndex = 0;
+
+    while (currentDate < endDate) {
+      if (currentDate.getDay() === 1 || currentDate.getDay() === 2) { // 1: 월요일, 2: 화요일
+        events.push({
+          title: '발표',
+          start: new Date(currentDate),
+          extendedProps: {
+            githubId: members[memberIndex]
+          }
+        });
+
+        memberIndex = (memberIndex + 1) % members.length;
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return events;
+  }
+</script>
+</body>
+</html>
